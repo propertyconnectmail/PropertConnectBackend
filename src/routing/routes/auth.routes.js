@@ -1,0 +1,11 @@
+const router = require("express").Router();
+let authRoutes = require("../../controllers/auth.controller")
+
+//Route of login
+router.post("/web", authRoutes.loginWebUser);
+// router.post("/login/mobile", login.loginMobileUser);
+// router.post("/forgot/web", login.forgotWebUser);
+// router.post("/forgot/mobile", login.forgotMobileUser);
+// router.get("/logout", login.logoutWebUser);
+
+module.exports = router;
