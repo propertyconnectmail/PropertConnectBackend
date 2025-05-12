@@ -145,10 +145,8 @@ class FileService {
     async updateOne( body ) {
         try {
 
-            console.log(body)
-            console.log("in update one")
             //Updating document and returning result
-            let result = await this.MongooseServiceInstance.updateOne({ appointmendId: body.appointmentId }, body);
+            let result = await this.MongooseServiceInstance.updateOne({ appointmentId: body.appointmentId }, body);
             if(result.modifiedCount === 1){
                 return { message : "success" }
             }
@@ -204,10 +202,11 @@ class FileService {
                 }
             }
 
-            body.clientDocuments = uploadedUrls;
+            appointment.clientDocuments = uploadedUrls;
+            appointment.clientDocumentsUploaded = body.clientDocumentsUploaded;
 
             //Updating document and returning result
-            let result = await this.MongooseServiceInstance.updateOne({ appointmentId : body.appointmentId }, body);
+            let result = await this.MongooseServiceInstance.updateOne({ appointmentId : appointment.appointmentId }, appointment);
             if(result.modifiedCount === 1){
               return { message : "success" }
             }
@@ -241,10 +240,11 @@ class FileService {
               }
           }
 
-          body.clientDocuments = uploadedUrls;
+          appointment.clientDocuments = uploadedUrls;
+          appointment.clientDocumentsUploaded = body.clientDocumentsUploaded;
 
           //Updating document and returning result
-          let result = await this.MongooseServiceInstance.updateOne({ appointmentId : body.appointmentId }, body);
+          let result = await this.MongooseServiceInstance.updateOne({ appointmentId : appointment.appointmentId }, appointment);
           if(result.modifiedCount === 1){
             return { message : "success" }
           }
@@ -304,10 +304,11 @@ class FileService {
                 }
             }
 
-            body.professionalDocuments = uploadedUrls;
+            appointment.professionalDocuments = uploadedUrls;
+            appointment.professionalDocumentsUploaded = body.professionalDocumentsUploaded;
 
             //Updating document and returning result
-            let result = await this.MongooseServiceInstance.updateOne({ appointmentId : body.appointmentId }, body);
+            let result = await this.MongooseServiceInstance.updateOne({ appointmentId : appointment.appointmentId }, appointment);
             if(result.modifiedCount === 1){
               return { message : "success" }
             }
@@ -341,10 +342,11 @@ class FileService {
               }
           }
 
-          body.professionalDocuments = uploadedUrls;
+          appointment.professionalDocuments = uploadedUrls;
+          appointment.professionalDocumentsUploaded = body.professionalDocumentsUploaded;
 
           //Updating document and returning result
-          let result = await this.MongooseServiceInstance.updateOne({ appointmentId : body.appointmentId }, body);
+          let result = await this.MongooseServiceInstance.updateOne({ appointmentId : appointment.appointmentId }, appointment);
           if(result.modifiedCount === 1){
             return { message : "success" }
           }
