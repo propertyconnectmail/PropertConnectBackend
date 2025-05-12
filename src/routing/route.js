@@ -9,6 +9,7 @@ const officialRoutes = require('./routes/official.routes');
 const registryLocationRoutes = require('./routes/registryLocation.routes');
 const auditLogRoutes = require('./routes/auditLog.routes');
 const PlatformConfigRoutes = require('./routes/platformConfig.routes');
+const AppointmentRoutes = require('./routes/appointment.routes');
 const downloadZipRoute = require('../utils/downloadCertifications');
 
 // Use route files
@@ -19,12 +20,13 @@ router.use('/api/official', officialRoutes);
 router.use('/api/registry', registryLocationRoutes);
 router.use('/api/audit', auditLogRoutes);
 router.use('/api/platform', PlatformConfigRoutes);
-
+router.use('/api/appointment', AppointmentRoutes);
 
 router.use('/api/auth', authRoutes);
 router.use('/api/upload', uploadRoutes);
 
 const { downloadCertificationsAsZip } = require('../utils/downloadCertifications');
+const { Appointment } = require('../models/Appointment');
 
 
 router.get('/api/certifications/download-zip', async (req, res) => {

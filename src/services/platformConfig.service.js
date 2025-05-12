@@ -112,8 +112,16 @@ class FileService {
        */
         async updateTotalRevenue( body ) {
           try {
+              let platformConfig = await this.MongooseServiceInstance.findOne({ id : '1' })
+
+              const currentRevenue = parseFloat(platformConfig.totalRevenue);
+              const newCommission = parseFloat(body.commission);
+              const updatedRevenue = (currentRevenue + newCommission).toFixed(2);
+
+              platformConfig.totalRevenue = updatedRevenue;
+
               //Updating document and returning result
-              let result = await this.MongooseServiceInstance.updateOne({ id: "1" }, body);
+              let result = await this.MongooseServiceInstance.updateOne({ id: "1" }, platformConfig);
               if(result.modifiedCount === 1){
                 return { message : "success" }
               }

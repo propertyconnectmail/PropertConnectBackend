@@ -14,6 +14,12 @@ const ProfessionalSchema = new mongoose.Schema({
     url: String,
     status: String,
     consultationFee: String,
+    totalRating: String,
+    totalCount: String,
+    averageRating: String,
+    about: String,
+    consults: String,
+    experience: String,
     bankAccountDetails: {
         accountHolderName: { type: String },
         accountNumber: { type: String },
@@ -21,8 +27,7 @@ const ProfessionalSchema = new mongoose.Schema({
         branchName: { type: String },
     },
     certifications: [String],
-    rating: [{ clientEmail : String , clientName : String , rating : String , message : String , date : String }],
-    averageRating: String
+    rating: [{ appointmentId : String, clientEmail : String , clientUrl : String, clientName : String , rating : String , message : String , date : String }]
 }, { timestamps: true });
 
 const Professional = mongoose.model("Professional", ProfessionalSchema);

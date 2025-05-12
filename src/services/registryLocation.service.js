@@ -89,7 +89,7 @@ class FileService {
      async findOne( body ) {
       try {
         console.log(body)
-        let result = await this.MongooseServiceInstance.findOne({ id: body.id })
+        let result = await this.MongooseServiceInstance.findOne({ locationName: body.locationName })
         console.log(result)
         if(result.length != null || result.length != 0){
           return result;

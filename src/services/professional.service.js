@@ -120,11 +120,34 @@ class FileService {
 
 
 
+
+  /**
+   * @description Attempt to find a post with the provided email
+   * @returns {Object}]
+   */
+  async findVerified(  ) {
+    try {
+      let result = await this.MongooseServiceInstance.find({status : 'verified'})
+      if(result.length != null || result.length != 0){
+        return result;
+      }
+      return result
+    } 
+    catch ( err ) {
+        console.log( err)
+        return { Status: 500 , Error : `${err.name} : ${err.message} `, Location: "./Src/Services/employee.service.js - findOne(body)"};
+    }
+  }
+
+
+
     /**
    * @description Attempt to update a post with the provided object
    */
     async updateOne( body ) {
         try {
+
+          console.log(body);
             //Validating with joi schema
             if(body != null){
                 let { error } = await registerProfessionalValidation(body);
@@ -177,6 +200,7 @@ class FileService {
               }
 
               body.certifications = uploadedUrls;
+              console.log(body.certifications)
 
               //Updating document and returning result
               let result = await this.MongooseServiceInstance.updateOne({ email: body.email }, body);
@@ -196,80 +220,83 @@ class FileService {
 
 
 
-//       /**
-//    * @description Attempt to update a post with the provided object
-//    * @param body {object} Object containing 'email' field and the updated body
-//    * to update specific post
-//    * @returns {Object}
-//    */
-//       async updatePic( body ) {
-//         try {    
 
-//           console.log(body)
+  /**
+   * @description Attempt to update a post with the provided object
+   */
+      async updateProfessionalPicture( body ) {
+        try { 
 
-//             let imageExist = await this.findOne({ email: body.email });
-//             console.log(imageExist)
-      
-//             await aws.deletefile(imageExist.url);
+            let imageExist = await this.findOne({ email: body.email });
+
+            if(body.url != 'https://property-connect-bucket.s3.eu-north-1.amazonaws.com/profile-image.svg'){
+              await aws.deletefile(imageExist.url);
+            }
     
-//             let aws_url = await aws.uploadfile(body.url)
-    
-    
-//             fs.unlink(body.url, (err) => {
-//               if (err) {
-//                 throw err;
-//               }
-    
-//               console.log("Deleted File successfully.");
-//             });
-    
-    
-//             imageExist.url = aws_url.Location;
+            const fileName = body.url.split('/static/Temp/')[1];  // 'Sample-File---1-1746271360260.pdf'
+            const localFilePath = path.resolve(__dirname, '../../Public/Temp', fileName);
+
+            let aws_url;
             
-//             let process =  await this.MongooseServiceInstance.updateOne({ email: body.email }, imageExist);
+            try{
+                aws_url = await aws.uploadfile(localFilePath);
 
-//             return { url : imageExist.url};
-//         } 
-//         catch ( err ) {
-//             console.log( err)
-//             return { Status: 500, Error : `${err.name} : ${err.message} `, Location: "./Src/Services/employee.service.js - updatePic(body)" };
-//         }
-//     }
+                // Delete the local temp file
+                fs.unlink(localFilePath, (err) => {
+                    if (err) console.error(`Failed to delete ${fileName}:`, err);
+                    else console.log(`Deleted temp file: ${fileName}`);
+                });
+            }catch(err){
+                console.error(`Upload failed for ${fileName}:`, err);
+                // Optional: handle failure (e.g., abort, continue, notify)
+            }    
+    
+            imageExist.url = aws_url.Location;
+            
+            let process =  await this.MongooseServiceInstance.updateOne({ email: body.email }, imageExist);
+
+            return { message : "success", url : imageExist.url};
+        } 
+        catch ( err ) {
+            console.log( err)
+            return { Status: 500, Error : `${err.name} : ${err.message} `, Location: "./Src/Services/employee.service.js - updatePic(body)" };
+        }
+    }
 
 
 
-//     /**
-//    * @description Attempt to update a post with the provided object
-//    * @param body {object} Object containing 'email' field and the updated body
-//    * to update specific post
-//    * @returns {Object}
-//    */
-//     async updatePassword( body ) {
-//         try {
-//             if(body.new_password != body.retype_new_password){return {Status : 400 , Error: "Passwords do not Match"}}
+         /**
+   * @description Attempt to update a post with the provided object
+   * @param body {object} Object containing 'email' field and the updated body
+   * to update specific post
+   * @returns {Object}
+   */
+    async updateProfessionalPassword( body ) {
+        try {
 
-//             let user = await this.MongooseServiceInstance.findOne({email : body.email})
-//             if(!user){ return null }
+            let user = await this.MongooseServiceInstance.findOne({email : body.email})
+            if(!user){ return null }
 
-//             const validPassword = await bcrypt.compare(body.old_password, user.password)
-//             if (!validPassword) return { Status: 400, Error: "Please Enter the Valid Old Password" }
+            const validPassword = await bcrypt.compare(body.oldPassword, user.password)
+            if (!validPassword) return { Status: 400, Error: "Please Enter the Valid Old Password" }
 
-//           //   //Hashing the Password
-//             const salt = await bcrypt.genSalt(10);
-//             const hashedPassword = await bcrypt.hash(body.new_password, salt)
+            //Hashing the Password
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(body.newPassword, salt)
 
-//             //Updating document and returning result
-//             let result = await this.MongooseServiceInstance.updateOne({email : body.email},{password : hashedPassword});
-//             if(result.modifiedCount === 1){
-//               return { message : "success" }
-//             }
-//             return result;
-//         } 
-//         catch ( err ) {
-//             console.log( err)
-//             return { Status: 500, Error : `${err.name} : ${err.message} `, Location: "./Src/Services/employee.service.js - updatePassword(body)" };
-//         }
-//     }
+            //Updating document and returning result
+            let result = await this.MongooseServiceInstance.updateOne({email : body.email},{password : hashedPassword});
+            if(result.modifiedCount === 1){
+              return { message : "success" }
+            }
+            return result;
+        } 
+        catch ( err ) {
+            console.log( err)
+            return { Status: 500, Error : `${err.name} : ${err.message} `, Location: "./Src/Services/employee.service.js - updatePassword(body)" };
+        }
+    }
+
 
 
 

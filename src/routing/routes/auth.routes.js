@@ -3,7 +3,8 @@ let authRoutes = require("../../controllers/auth.controller")
 
 //Route of login
 router.post("/web", authRoutes.loginWebUser);
-// router.post("/login/mobile", login.loginMobileUser);
+router.post("/mobile/client", authRoutes.loginMobileClient);
+router.post("/mobile/professional", authRoutes.loginMobileProfessional);
 // router.post("/forgot/web", login.forgotWebUser);
 // router.post("/forgot/mobile", login.forgotMobileUser);
 // router.get("/logout", login.logoutWebUser);

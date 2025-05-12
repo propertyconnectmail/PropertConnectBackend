@@ -35,10 +35,19 @@ connectDB();
 
 
 app.get('/api/certifications/download-zip', async (req, res) => {
-    const urls = req.query.urls; // array of URLs like ['https://s3...', 'https://s3...']
+  let urls = req.query.urls;
 
-  if (!urls || !Array.isArray(urls)) {
-    return res.status(400).json({ message: 'Invalid or missing urls parameter' });
+  // Normalize single vs multiple URL cases
+  if (!urls) {
+    return res.status(400).json({ message: 'Missing urls parameter' });
+  }
+
+  if (typeof urls === 'string') {
+    urls = [urls]; // Convert single URL string to array
+  }
+
+  if (!Array.isArray(urls)) {
+    return res.status(400).json({ message: 'Invalid urls format' });
   }
 
   res.attachment('certifications.zip');
@@ -59,6 +68,7 @@ app.get('/api/certifications/download-zip', async (req, res) => {
 
   await archive.finalize();
 });
+
 
 // Simple test route
 app.get('/', (req, res) => {

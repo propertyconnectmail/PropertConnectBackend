@@ -44,13 +44,18 @@ const registerProfessionalValidation = data => {
             .max(1024),
         status: Joi.string()
             .valid('pending', 'verified', 'blocked', 'rejected'),
-        consultationFee: Joi.string()
-            .required(),
+        consultationFee: Joi.string(),
+        totalRating: Joi.string().allow(''),
+        totalCount: Joi.string().allow(''),
+        averageRating: Joi.string().allow(''),
+        about: Joi.string(),
+        consults: Joi.string().allow(''),
+        experience: Joi.string(),
         certifications: Joi.array()
             .items(Joi.string()
                 .min(10)
-                .max(1024)
-                .required()),
+                .max(1024)),
+        rating: Joi.array()
     });
 
     return schema.validate(data);

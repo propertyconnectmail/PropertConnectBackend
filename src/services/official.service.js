@@ -123,7 +123,7 @@ class FileService {
     async deleteOne( body ) {
       try {
           try{
-            if(body.url != 'https://example.com/images/official.jpg'){
+            if(body.url != 'https://property-connect-bucket.s3.eu-north-1.amazonaws.com/profile-image.svg'){
               await aws.deletefile(body.url);
             }
           }catch(err){

@@ -1,8 +1,9 @@
 //const auth = require('../Middleware/auth');
 const MongooseService = require('./MongooseService'); // Data Access Layer
 const FileModelEmployee = require("../models/Employee"); // Database Model
-// const FileModelCustomer = require("../Models/customer.model"); // Database Model
-const { loginWebValidation , loginMobileValidation } = require("../validation/auth.validation");
+const FileModelClient = require("../models/Client"); // Database Model
+const FileModelProfessional = require("../models/Professional"); // Database Model
+const { loginWebValidation } = require("../validation/auth.validation");
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
 
@@ -26,7 +27,78 @@ class LoginService {
             if (error) return { Status: "400", Error: error.details[0].message }
 
             //Check if email exists
-            let User = await this.findEmailExist(body);
+            let User = await this.findEmailExistWeb(body);
+            if (!User) return { Status: "400", Error: "Email or Password is Incorrect" }
+
+            //Checking Password
+            const validPassword = await bcrypt.compare(body.password, User.password)
+            if (!validPassword) return { Status: "400", Error: "Email or Password is Incorrect" }
+
+            if( validPassword === true ) {
+                return User
+            }
+
+            // //User Authorization Token with Jwt Authentication
+            // let user = { _id: User._id, email: User.email, type: User.type };
+            // let token = auth.authenticateToken(user);
+            // return { Status: 200, Token: token.accessToken, Refresh: token.refreshToken, _id: User._id, email: User.email, type: User.type, grade: User.grade, dle_access: User.dle_access }
+        }
+        catch (err) {
+            console.log(err)
+            return { Status: 500, Error: `${err.name} : ${err.message} `, Location: "./Src/Service/login.service.js - loginAndAuthenticate(body)" };
+        }
+    }
+
+
+
+     /**
+     * @description Attempt to login with the provided object
+     * @param body {object} Object containing 'email' and 'passwords' fields to
+     * get authenticated
+     * @returns {Object}
+     */
+     async loginAndAuthenticateMobileClient(body) {
+        try {
+
+            console.log(body)
+
+            //Check if email exists
+            let User = await this.findEmailExistMobileClient(body);
+            if (!User) return { Status: "400", Error: "Email or Password is Incorrect" }
+
+            //Checking Password
+            const validPassword = await bcrypt.compare(body.password, User.password)
+            if (!validPassword) return { Status: "400", Error: "Email or Password is Incorrect" }
+
+            if( validPassword === true ) {
+                return User
+            }
+
+            // //User Authorization Token with Jwt Authentication
+            // let user = { _id: User._id, email: User.email, type: User.type };
+            // let token = auth.authenticateToken(user);
+            // return { Status: 200, Token: token.accessToken, Refresh: token.refreshToken, _id: User._id, email: User.email, type: User.type, grade: User.grade, dle_access: User.dle_access }
+        }
+        catch (err) {
+            console.log(err)
+            return { Status: 500, Error: `${err.name} : ${err.message} `, Location: "./Src/Service/login.service.js - loginAndAuthenticate(body)" };
+        }
+    }
+
+
+
+
+     /**
+     * @description Attempt to login with the provided object
+     * @param body {object} Object containing 'email' and 'passwords' fields to
+     * get authenticated
+     * @returns {Object}
+     */
+     async loginAndAuthenticateMobileProfessional(body) {
+        try {
+
+            //Check if email exists
+            let User = await this.findEmailExistMobileProfessional(body);
             if (!User) return { Status: "400", Error: "Email or Password is Incorrect" }
 
             //Checking Password
@@ -196,9 +268,51 @@ class LoginService {
      * find posts
      * @returns {Object}
      */
-    async findEmailExist(body) {
+    async findEmailExistWeb(body) {
         try {
             let model = FileModelEmployee.Employee
+            
+            this.MongooseServiceInstance = new MongooseService(model);
+            const result = await this.MongooseServiceInstance.findOne({ email: body.email });
+            return result;
+        }
+        catch (err) {
+            console.log(err)
+            return { Status: 500, Error: `${err.name} : ${err.message} `, Location: "./Src/Service/login.service.js - findEmailExist(body)" };
+        }
+    }
+
+
+    /**
+     * @description Attempt to find posts with the provided object
+     * @param body {object} Object containing 'type' and 'email;' fields to
+     * find posts
+     * @returns {Object}
+     */
+    async findEmailExistMobileClient(body) {
+        try {
+            let model = FileModelClient.Client
+            
+            this.MongooseServiceInstance = new MongooseService(model);
+            const result = await this.MongooseServiceInstance.findOne({ email: body.email });
+            return result;
+        }
+        catch (err) {
+            console.log(err)
+            return { Status: 500, Error: `${err.name} : ${err.message} `, Location: "./Src/Service/login.service.js - findEmailExist(body)" };
+        }
+    }
+
+
+    /**
+     * @description Attempt to find posts with the provided object
+     * @param body {object} Object containing 'type' and 'email;' fields to
+     * find posts
+     * @returns {Object}
+     */
+    async findEmailExistMobileProfessional(body) {
+        try {
+            let model = FileModelProfessional.Professional
             
             this.MongooseServiceInstance = new MongooseService(model);
             const result = await this.MongooseServiceInstance.findOne({ email: body.email });

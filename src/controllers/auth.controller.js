@@ -1,8 +1,7 @@
 const file = require("../services/auth.service");
 const FileService = new file();
 
-module.exports = { loginWebUser };
-// module.exports = { loginWebUser, logoutWebUser, loginMobileUser , forgotWebUser, forgotMobileUser };
+module.exports = { loginWebUser, loginMobileClient, loginMobileProfessional };
 
 /**
  * @description Find email and authenticate with the provided body
@@ -10,6 +9,33 @@ module.exports = { loginWebUser };
 async function loginWebUser(req, res) {
   try {
     const result = await FileService.loginAndAuthenticateWeb(req.body);
+    return res.send(result);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({ Status: 500, Success: false, Error: `${err.name} : ${err.message}` });
+  }
+}
+
+/**
+ * @description Find email and authenticate with the provided body
+ */
+async function loginMobileClient(req, res) {
+  try {
+    const result = await FileService.loginAndAuthenticateMobileClient(req.body);
+    return res.send(result);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({ Status: 500, Success: false, Error: `${err.name} : ${err.message}` });
+  }
+}
+
+
+/**
+ * @description Find email and authenticate with the provided body
+ */
+async function loginMobileProfessional(req, res) {
+  try {
+    const result = await FileService.loginAndAuthenticateMobileProfessional(req.body);
     return res.send(result);
   } catch (err) {
     console.log(err);

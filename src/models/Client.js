@@ -19,7 +19,8 @@ const ClientSchema = new mongoose.Schema(
         cardNumber: String,
         expiryMonth: String,
         expiryYear: String,
-        cardHolderName: String
+        cardHolderName: String,
+        cvv: String
       }
     ]
   },

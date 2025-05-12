@@ -1,18 +1,39 @@
 const mongoose = require('mongoose');
 
-const appointmentSchema = new mongoose.Schema({
-  client: { type: mongoose.Schema.Types.ObjectId, ref: 'Client', required: true },
-  professional: { type: mongoose.Schema.Types.ObjectId, ref: 'Professional', required: true },
-  date: { type: Date, required: true },
-  time: { type: String, required: true },
-  zoomLink: { type: String },
-  status: { type: String, enum: ['pending', 'completed', 'cancelled', 'rescheduled'], default: 'pending' },
-  documents: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Document' }],
-  payment: { type: mongoose.Schema.Types.ObjectId, ref: 'Payment' },
-  clientReview: {
-    rating: { type: Number, min: 1, max: 5 },
-    comment: { type: String }
-  }
-}, { timestamps: true });
+const AppointmentSchema = new mongoose.Schema({
+  appointmentId: String,
+  appointmentStatus: String,
+  professionalName: String,
+  professionalUrl: String,
+  clientEmail: String,
+  clientName: String,
+  clientUrl: String,
+  professionalEmail: String,
+  appointmentDate: String,
+  appointmentTime: String,
+  zoomJoinLink: String,
+  zoomStartLink: String,
 
-module.exports = mongoose.model('Appointment', appointmentSchema);
+  chatInitiated: { type: Boolean, default: false },
+  clientDocumentsUploaded: { type: Boolean, default: false },
+  professionalDocumentsUploaded: { type: Boolean, default: false },
+  zoomMeetingCompletedClient: { type: Boolean, default: false },
+  zoomMeetingCompletedProfessional: { type: Boolean, default: false },
+  appointmentCompleted: { type: Boolean, default: false },
+
+  clientDocuments: { type: [String], default: [] },
+  professionalDocuments: { type: [String], default: [] },
+
+  professionalPaymentStatus: String,
+  totalPaymentAmount: String,
+  professionalPaymentAmount: String,
+  commission: String,
+  transactionFee: String,
+
+  chatId: String
+}, {
+  timestamps: true
+});
+
+const Appointment = mongoose.model("Appointment", AppointmentSchema);
+module.exports.Appointment = Appointment;
