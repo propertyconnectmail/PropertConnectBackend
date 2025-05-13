@@ -307,6 +307,11 @@ class FileService {
     try {
 
         console.log(body)
+
+        if(body.url != 'https://property-connect-bucket.s3.eu-north-1.amazonaws.com/profile-image.svg'){
+          await aws.deletefile(body.url);
+        }
+
         //Multiple file delete
         for (const url of body.certifications) {
             

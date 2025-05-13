@@ -163,37 +163,36 @@ class FileService {
     /**
        * @description Attempt to update a post with the provided object
        */
-    async updateMaintainanceMode() {
+    async updateMaintainanceMode(body) {
       try {
 
-          let platformConfigExist = await this.MongooseServiceInstance.findOne({id : "1"});
-          let on;
-          let off;
+          let platformConfigExist = await this.MongooseServiceInstance.findOne({ id: body.id });
 
-          if(platformConfigExist.maintenanceMode === "off"){
-            on = 'on';
-            platformConfigExist.maintenanceMode = on;
-            //Updating document and returning result
-            let result = await this.MongooseServiceInstance.updateOne({ id: "1" }, platformConfigExist );
-            if(result.modifiedCount === 1){
-              return { message : "success" }
+          if (!platformConfigExist) {
+            return { message: 'Platform config not found' };
+          }
+
+          if (body.maintenanceMode === 'on' || body.maintenanceMode === 'off') {
+            platformConfigExist.maintenanceMode = body.maintenanceMode;
+
+            const result = await this.MongooseServiceInstance.updateOne(
+              { id: body.id },
+              platformConfigExist
+            );
+
+            if (result.modifiedCount === 1) {
+              return { message: 'success' };
             }
+
             return result;
           }
-          if(platformConfigExist.maintenanceMode === "on"){
-            off = 'off';
-            platformConfigExist.maintenanceMode = off;
-            //Updating document and returning result
-            let result = await this.MongooseServiceInstance.updateOne({ id: "1" }, platformConfigExist );
-            if(result.modifiedCount === 1){
-              return { message : "success" }
-            }
-            return result;
-          }
+
+          return { message: 'Invalid maintenance mode value' };
+
       } 
       catch ( err ) {
           console.log( err)
-          return { Status: 500, Error : `${err.name} : ${err.message} `, Location: "./Src/Services/employee.service.js - updateOne(body)" };
+          return { Status: 500, Error : `${err.name} : ${err.message} `, Location: "./Src/Services/platformConfig.service.js - updateMaintainance(body)" };
       }
   }
   

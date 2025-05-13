@@ -131,7 +131,7 @@ class FileService {
             let imageExist = await this.findOne({ email: body.email });
       
             if(body.url != 'https://property-connect-bucket.s3.eu-north-1.amazonaws.com/profile-image.svg'){
-                await aws.deletefile(imageExist.url);
+              await aws.deletefile(imageExist.url);
             }
     
             const fileName = body.url.split('/static/Temp/')[1];  // 'Sample-File---1-1746271360260.pdf'
@@ -206,7 +206,6 @@ class FileService {
      */
     async deleteOne( body ) {
       try {
-        console.log(body)
               
           try{
             if(body.url != 'https://property-connect-bucket.s3.eu-north-1.amazonaws.com/profile-image.svg'){

@@ -20,9 +20,9 @@ async function createAppointment ( req, res ) {
 /**
  * @description Create a record with the provided body
  */
-async function getAllAppointments ( req, res ) {
+async function getAllClientAppointments ( req, res ) {
   try {
-    const result = await FileService.find( req.body);
+    const result = await FileService.findClientAppointments( req.body);
     return res.send( result );
   } catch ( err ) {
     console.log( err ); 
@@ -34,9 +34,9 @@ async function getAllAppointments ( req, res ) {
 /**
  * @description Create a record with the provided body
  */
-async function getAllClientAppointments ( req, res ) {
+async function getAllAppointments ( req, res ) {
   try {
-    const result = await FileService.findClientAppointments( req.body);
+    const result = await FileService.find();
     return res.send( result );
   } catch ( err ) {
     console.log( err ); 
