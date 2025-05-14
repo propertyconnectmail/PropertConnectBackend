@@ -7,7 +7,7 @@ const auditLogValidation = data => {
         id : Joi.string()
             .required(),
         actionType: Joi.string()
-            .valid('create','update', 'delete'),
+            .valid('create','update', 'delete', 'view'),
         performedBy: Joi.string()
             .email()
             .min(6)
