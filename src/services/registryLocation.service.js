@@ -17,69 +17,69 @@ class FileService {
   }
 
   
-  // /**
-  //  * @description Attempt to create a post with the provided object
-  //  * @param body {object} Object containing all required fields to
-  //  * create post
-  //  * @returns {Object}
-  //  */
-  // async create(body) {
-  //   try {
+  /**
+   * @description Attempt to create a post with the provided object
+   * @param body {object} Object containing all required fields to
+   * create post
+   * @returns {Object}
+   */
+  async create(body) {
+    try {
 
-  //     //Check if email already exists
-  //     let code = await this.createId();
-  //     console.log(body)
-  //     body.id = code;
+      //Check if email already exists
+      let code = await this.createId();
+      console.log(body)
+      body.id = code;
 
-  //     //Validating with joi schema by calling validateRegistration function at the end of the page
-  //     if (body != null) {
-  //       let { error } = await registerRegistryLocationValidation(body);
-  //       if (error) return { Status: "400", Error: error.details[0].message, Type: "Joi" }
-  //     }
+      //Validating with joi schema by calling validateRegistration function at the end of the page
+      if (body != null) {
+        let { error } = await registerRegistryLocationValidation(body);
+        if (error) return { Status: "400", Error: error.details[0].message, Type: "Joi" }
+      }
 
-  //       if(body.url != 'https://example.com/images/registryLocation.jpg'){
-  //         console.log(body.url)
-  //           const fileName = body.url.split('/static/Temp/')[1];  // 'Sample-File---1-1746271360260.pdf'
-  //           const localFilePath = path.resolve(__dirname, '../../Public/Temp', fileName);
-  //           let aws_url;
-  //           console.log(localFilePath)
+        if(body.url != 'https://example.com/images/registryLocation.jpg'){
+          console.log(body.url)
+            const fileName = body.url.split('/static/Temp/')[1];  // 'Sample-File---1-1746271360260.pdf'
+            const localFilePath = path.resolve(__dirname, '../../Public/Temp', fileName);
+            let aws_url;
+            console.log(localFilePath)
 
-  //           try{
-  //               aws_url = await aws.uploadfile(localFilePath); // Upload file from disk
+            try{
+                aws_url = await aws.uploadfile(localFilePath); // Upload file from disk
 
-  //               // Delete the local temp file
-  //               fs.unlink(localFilePath, (err) => {
-  //                   if (err) console.error(`Failed to delete ${fileName}:`, err);
-  //                   else console.log(`Deleted temp file: ${fileName}`);
-  //               });
-  //           }catch(err){
-  //               console.error(`Upload failed for ${fileName}:`, err);
-  //           }
+                // Delete the local temp file
+                fs.unlink(localFilePath, (err) => {
+                    if (err) console.error(`Failed to delete ${fileName}:`, err);
+                    else console.log(`Deleted temp file: ${fileName}`);
+                });
+            }catch(err){
+                console.error(`Upload failed for ${fileName}:`, err);
+            }
 
-  //           body.url = aws_url.Location;
+            body.url = aws_url.Location;
 
-  //           //Creating the User
-  //           let result = await this.MongooseServiceInstance.create(body)
-  //           if(result.id === body.id){
-  //             return { message : "success" }
-  //           }
+            //Creating the User
+            let result = await this.MongooseServiceInstance.create(body)
+            if(result.id === body.id){
+              return { message : "success" }
+            }
 
-  //           return result;
-  //       }
+            return result;
+        }
       
-  //     //Creating the User
-  //     let result = await this.MongooseServiceInstance.create(body)
-  //     if(result.id === body.id){
-  //       return { message : "success" }
-  //     }
+      //Creating the User
+      let result = await this.MongooseServiceInstance.create(body)
+      if(result.id === body.id){
+        return { message : "success" }
+      }
 
-  //     return result;
-  //   }
-  //   catch (err) {
-  //     console.log(err)
-  //     return { Status: 500, Error: `${err.name} : ${err.message} `, Location: "./Src/Services/registryLocation.service.js - create(body)" };
-  //   }
-  // }
+      return result;
+    }
+    catch (err) {
+      console.log(err)
+      return { Status: 500, Error: `${err.name} : ${err.message} `, Location: "./Src/Services/registryLocation.service.js - create(body)" };
+    }
+  }
 
 
    /**
